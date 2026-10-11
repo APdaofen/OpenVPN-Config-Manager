@@ -9,8 +9,8 @@ using namespace chrono;
 class Feature : public testing::Test
 {
 protected:
-	db minthr = 0;
-	db maxthr = numeric_limits<db>::max();
+	db minthr = 1000;
+	db maxthr = 1500;
 	steady_clock::time_point birth;
 	void SetUp (void) override
 	{
@@ -18,9 +18,14 @@ protected:
 	}
 	void TearDown (void) override
 	{
-		db dt = duration_cast<duration<db> > (steady_clock::now() - birth).count();
+		db dt = duration_cast<duration<db,milli> > (steady_clock::now() - birth).count();
 		EXPECT_LE (minthr, dt);
 		EXPECT_LE (dt, maxthr);
+	}
+	void SetThr (db min, db max)
+	{
+		minthr = min;
+		maxthr = max;
 	}
 };
 
