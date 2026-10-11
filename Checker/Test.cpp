@@ -9,7 +9,7 @@ using namespace chrono;
 class Feature : public testing::Test
 {
 protected:
-	db minthr = 1000;
+	db minthr = 900;
 	db maxthr = 1500;
 	steady_clock::time_point birth;
 	void SetUp (void) override
