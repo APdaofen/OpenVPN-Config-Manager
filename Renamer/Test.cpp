@@ -2,6 +2,12 @@
 #include	<filesystem>
 #include	<chrono>
 #include	"lib.h"
+#ifndef		OVPNS
+#define		OVPNS	""
+#endif
+#ifndef		OVPNS_AUTHED
+#define		OVPNS_AUTHED	""
+#endif
 using namespace std;
 using namespace chrono;
 using namespace filesystem;
@@ -17,8 +23,8 @@ vector<string> new_templates =
 class Feature : public testing::Test
 {
 protected:
-	db minthr = 0;
-	db maxthr = 10000;
+	db minthr = 100;
+	db maxthr = 600;
 	steady_clock::time_point birth;
 	void SetUp (void) override
 	{
