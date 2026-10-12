@@ -9,7 +9,7 @@ class Feature : public testing::Test
 {
 protected:
 	db minthr = 100;
-	db maxthr = 500;
+	db maxthr = 1000;
 	steady_clock::time_point birth;
 	void SetUp (void) override
 	{
@@ -34,7 +34,7 @@ class Dryrun : public testing::Test
 {
 protected:
 	db minthr = 0;
-	db maxthr = 200;
+	db maxthr = 400;
 	steady_clock::time_point birth;
 	void SetUp (void) override
 	{

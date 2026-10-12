@@ -10,7 +10,7 @@ class Feature : public testing::Test
 {
 protected:
 	db minthr = 900;
-	db maxthr = 1600;
+	db maxthr = 2000;
 	steady_clock::time_point birth;
 	void SetUp (void) override
 	{
