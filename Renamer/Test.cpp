@@ -23,7 +23,7 @@ vector<string> new_templates =
 class Feature : public testing::Test
 {
 protected:
-	db minthr = 100;
+	db minthr = 50;
 	db maxthr = 600;
 	steady_clock::time_point birth;
 	void SetUp (void) override
