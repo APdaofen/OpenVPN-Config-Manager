@@ -1,27 +1,56 @@
 #include	<gtest/gtest.h>
 #include	<fstream>
+#include	<chrono>
 #include	"lib.h"
 using namespace std;
+using namespace chrono;
 
 class Feature : public testing::Test
 {
-public:
+protected:
+	db minthr = 50;
+	db maxthr = 1000;
+	steady_clock::time_point birth;
 	void SetUp (void) override
 	{
+		birth = steady_clock::now();
 		ASSERT_EQ (0, system ("xcopy ..\\..\\Templates Templates /I /Y"));
 	}
 	void TearDown (void) override
 	{
 		for (auto i : templates)
 			EXPECT_EQ (0, system (("fc Templates\\" + i + ".ovpn Templates\\" + i + "-authed.ovpn").c_str()));
+		db dt = duration_cast<duration<db,milli> > (steady_clock::now() - birth).count();
+		EXPECT_LE (minthr, dt);
+		EXPECT_LE (dt, maxthr);
+	}
+	void SetThr (db min, db max)
+	{
+		minthr = min;
+		maxthr = max;
 	}
 };
 class Dryrun : public testing::Test
 {
-public:
+protected:
+	db minthr = 0;
+	db maxthr = 400;
+	steady_clock::time_point birth;
 	void SetUp (void) override
 	{
+		birth = steady_clock::now();
 		ASSERT_EQ (0, system ("xcopy ..\\..\\Templates Templates /I /Y"));
+	}
+	void TearDown (void) override
+	{
+		db dt = duration_cast<duration<db,milli> > (steady_clock::now() - birth).count();
+		EXPECT_LE (minthr, dt);
+		EXPECT_LE (dt, maxthr);
+	}
+	void SetThr (db min, db max)
+	{
+		minthr = min;
+		maxthr = max;
 	}
 };
 
