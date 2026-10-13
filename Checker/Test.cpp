@@ -2,6 +2,7 @@
 #include	<climits>
 #include	<fstream>
 #include	<chrono>
+#include	<regex>
 #include	"lib.h"
 using namespace std;
 using namespace chrono;
@@ -51,8 +52,29 @@ TEST_F (Feature, PrintAddress)
 	EXPECT_EQ (0, system ("Checker Templates\\*.ovpn /w 0.8 /t 2 1 /n 2 > stdout"));
 	ifstream fin ("stdout");
 	string input;
-	for (int i = 0; i < 8; i++)
+	vector<int> mark (templates.size());
+	for (int i = 0; i < 8; i++) [&] ()
+	{
 		getline (fin, input);
+		smatch match;
+		ASSERT_EQ (1, regex_match (input, match, regex (R"(^.*Templates\\([1-4a-z.-]*)\.ovpn : (.*)$)")));
+		string output = match[2];
+		for (int i = 0; i < templates.size(); i++) if (match[1] == templates[i] || match[1] == templates[i] + "-authed")
+		{
+			if (mark[i])
+				EXPECT_EQ (output, "None of new server address found.");
+			else
+			{
+				mark[i] = 1;
+				ASSERT_EQ (1, regex_match (output, match, regex (R"(^1 New address\(es\) found: ([a-z.]+) $)")));
+				EXPECT_EQ (match[1], templates_address[i]);
+			}
+			return ;
+		}
+		EXPECT_EQ ("", ("Illegal filename output : " + output).c_str());
+	} ();
+	for (auto i : mark)
+		EXPECT_EQ (i, 1);
 	getline (fin, input); EXPECT_EQ (input, "4 server address(es) found.");
 	getline (fin, input); EXPECT_EQ (input, "Launching connection with ja.wikipedia.org : Done.");
 	getline (fin, input); EXPECT_EQ (input, "Launching connection with www.bbc.com : Done.");
