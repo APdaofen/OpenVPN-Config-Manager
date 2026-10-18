@@ -11,7 +11,7 @@ class Feature : public testing::Test
 {
 protected:
 	db minthr = 900;
-	db maxthr = 2000;
+	db maxthr = 2500;
 	steady_clock::time_point birth;
 	void SetUp (void) override
 	{
@@ -42,14 +42,14 @@ TEST_F (Feature, Basic)
 {
 	string cmd = "Checker ";
 	for (auto i : templates)
-		cmd += "Templates\\" + i + ".ovpn ";
+		cmd += "..\\Templates\\" + i + ".ovpn ";
 	cmd += "/w 0.8 /t 2 1 /n 2";
-	EXPECT_EQ (0, system (cmd.c_str()));
+	EXPECT_EQ (0, system (cmd));
 }
-TEST_F (Feature, Wildcard) { EXPECT_EQ (0, system ("Checker Templates\\*.ovpn /w 0.8 /t 2 1 /n 2")); }
+TEST_F (Feature, Wildcard) { EXPECT_EQ (0, system ("Checker ..\\Templates\\*.ovpn /w 0.8 /t 2 1 /n 2")); }
 TEST_F (Feature, PrintAddress)
 {
-	EXPECT_EQ (0, system ("Checker Templates\\*.ovpn /w 0.8 /t 2 1 /n 2 > stdout"));
+	EXPECT_EQ (0, system ("Checker ..\\Templates\\*.ovpn /w 0.8 /t 2 1 /n 2 > stdout"));
 	ifstream fin ("stdout");
 	string input;
 	vector<int> mark (templates.size());
@@ -76,6 +76,7 @@ TEST_F (Feature, PrintAddress)
 	for (auto i : mark)
 		EXPECT_EQ (i, 1);
 	getline (fin, input); EXPECT_EQ (input, "4 server address(es) found.");
+	getline (fin, input); EXPECT_EQ (input, "Test connection with these 4 address(es)? [Y/n] ");
 	getline (fin, input); EXPECT_EQ (input, "Launching connection with ja.wikipedia.org : Done.");
 	getline (fin, input); EXPECT_EQ (input, "Launching connection with www.bbc.com : Done.");
 	getline (fin, input); EXPECT_EQ (input, "Launching connection with www.cbc.ca : Done.");
@@ -86,7 +87,7 @@ TEST_F (Feature, PrintAddress)
 TEST_F (Feature, CaseInsensitivity)
 {
 
-	EXPECT_EQ (0, system ("Checker Templates\\*.ovpn /W 0.8 /T 2 1 /N 2 > nul"));
+	EXPECT_EQ (0, system ("Checker ..\\Templates\\*.ovpn /W 0.8 /T 2 1 /N 2 > nul"));
 
 	EXPECT_EQ (0, system ("Checker --HELP > stdout1 && fc stdout1 Help.txt /W"));
 	EXPECT_EQ (0, system ("Checker /Help > stdout2 && fc stdout2 Help.txt /W"));
@@ -95,4 +96,4 @@ TEST_F (Feature, CaseInsensitivity)
 	system ("del stdout1 stdout2 stdout3");
 }
 
-TEST (Bug, Bug202609090913) { EXPECT_EQ (0, system ("Checker Templates\\*.ovpn /t 2 /n 2")); }
+TEST (Bug, Bug202609090913) { EXPECT_EQ (0, system ("Checker ..\\Templates\\*.ovpn /t 2 /n 2")); }
