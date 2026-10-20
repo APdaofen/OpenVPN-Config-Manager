@@ -93,7 +93,6 @@ TEST_F (Feature, CaseInsensitivity)
 	EXPECT_EQ (0, system ("Checker /Help > stdout2 && fc stdout2 Help.txt /W"));
 	EXPECT_EQ (0, system ("Checker /? > stdout3 && fc stdout3 Help.txt /W"));
 
-	system ("del stdout1 stdout2 stdout3");
 }
 
 TEST (Bug, Bug202609090913) { EXPECT_EQ (0, system ("Checker ..\\Templates\\*.ovpn /t 2 /n 2")); }
